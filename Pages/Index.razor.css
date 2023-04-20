@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+}
+
+.wrapper {
+    border-radius: 5px;
+    border: 1px solid #bbb;
+}
+
+.wrapper .text-input {
+    display: flex;
+}
+
+.text-input .to-text {
+    border-left: 1px solid #bbb;
+    border-radius: 0px;
+    background-color: #f7f7f7;
+}
+
+.text-input textarea {
+    height: 250px;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 30px;
+    border-radius: 5px;
+    background: none;
+    padding: 10px 15px;
+}
+
+textarea::placeholder {
+    font-size: 30px;
+    color: #878787;
+    font-weight: 400;
+}
+
+.controls , li{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.controls, li, .icons , .icons i{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.controls {
+    list-style: none;
+    padding: 12px 15px;
+    border-bottom: 1px solid #bbb;
+}
+
+.controls .row select {
+    border: none;
+    outline: none;
+    font-size: 18px;
+    background: none;
+}
+
+select {
+    cursor: pointer;
+}
+
+.controls .exchange {
+    color: #9f9f9f;
+    font-size: 16px;
+    cursor:pointer;
+}
+
+.exchange {
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+.detected-text {
+    text-align: start;
+    margin-left: 10px;
+}
+
+.container button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 17px;
+    background-color: #007bff;
+    color: #fff;
+}

@@ -1,0 +1,112 @@
+﻿@page "/"
+@inject GoogleTranslateClient client
+
+<div class="container">
+    <h1>Blazor Translate</h1>
+    <div class="wrapper">
+        <ul class="controls">
+            <li class="row from">
+                <select name="language-select" title="language-select" @bind="@sourceLanguage">
+                    <option value="">Detect Language</option>
+                    @foreach (var language in supportedLanguages)
+                    {
+                        <option value="@language.Key">@language.Value.name</option>
+                    }
+                </select>
+            </li>
+
+            <li class="exchange" @onclick="@ChangeSourceToTarget"><i class="fas fa-exchange-alt"></i></li>
+
+            <li class="row to">
+                <select name="language-select" title="language-select" @bind="@targetLanguage">
+                    @foreach (var language in supportedLanguages)
+                    {
+                        <option value="@language.Key">@language.Value.name</option>
+                    }
+                </select>
+            </li>
+        </ul>
+
+        <div class="text-input">
+            <textarea class="from-text" name="" id="" cols="30" rows="10" placeholder="Enter Text"
+                @bind="@sourceText"></textarea>
+            <textarea class="to-text" name="" id="" cols="30" rows="10" readonly disabled placeholder="Translation"
+                @bind="@translatedText"></textarea>
+        </div>
+    </div>
+    <div class="detected-text">
+        @if (!string.IsNullOrEmpty(notificationText))
+        {
+            <p>@notificationText</p>
+        }
+    </div>
+    <button @onclick="@Translate">Translate Text</button>
+</div>
+
+@code {
+    private string sourceLanguage;
+    private string targetLanguage = "en";
+    private string sourceText;
+    private string translatedText;
+    private string notificationText;
+
+    private Dictionary<string, Language> supportedLanguages = new Dictionary<string, Language>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        supportedLanguages = await GetSupportedLanguages();
+    }
+
+    private async Task<Dictionary<string, Language>> GetSupportedLanguages()
+    => await client.GetSupportedLanguages();
+
+    private async Task<Language> DetectLanguage(string input)
+    => await client.DetectLanguage(input);
+
+
+    private async Task Translate()
+    {
+        notificationText = string.Empty;
+        if(string.IsNullOrEmpty(sourceText))
+        {
+            notificationText = "Insert a valid text to translate";
+        }
+        else if (string.IsNullOrEmpty(sourceLanguage))
+        {
+            Language detectedLanguage = await DetectLanguage(sourceText);
+            var translationResult = await client.Translate(sourceText, detectedLanguage.language, targetLanguage);
+            string decodedString = HttpUtility.HtmlDecode(translationResult.translatedText);
+            translatedText = decodedString;
+            if (supportedLanguages.TryGetValue(detectedLanguage.language, out Language language))
+            {
+                notificationText = $"Detected from {language.name}";
+            }
+        }
+        else
+        {
+            var translationResult = await client.Translate(sourceText, sourceLanguage, targetLanguage);
+            string decodedString = HttpUtility.HtmlDecode(translationResult.translatedText);
+            translatedText = decodedString;
+        }
+    }
+
+    private void ChangeSourceToTarget()
+    {
+        string tempSource = "";
+        string temptext = "";
+
+        tempSource = sourceLanguage;
+        temptext = sourceText;
+
+        if (string.IsNullOrEmpty(tempSource))
+        {
+            tempSource = "en";
+        }
+
+        sourceLanguage = targetLanguage;
+        sourceText = translatedText;
+
+        targetLanguage = tempSource;
+        translatedText = temptext;
+    }
+}
